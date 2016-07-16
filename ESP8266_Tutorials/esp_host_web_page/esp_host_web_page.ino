@@ -102,31 +102,31 @@ void loop()
     webPage += ":";
     webPage += ((millis() % 60000)/1000);
     webPage += "\n</body></html>";
-      //send the web page
-      const int dataLength = 2048;
-      for(unsigned int i = 0; i < webPage.length(); i+= dataLength)
+    //send the web page
+    const int dataLength = 2048;
+    for(unsigned int i = 0; i < webPage.length(); i+= dataLength)
+    {
+      String chunk = "";
+      for(unsigned int j = 0; (j+i < webPage.length() && j < dataLength); j++)
       {
-        String chunk = "";
-        for(unsigned int j = 0; (j+i < webPage.length() && j < dataLength); j++)
-        {
-          chunk += webPage[i+j];
-        }
-        
-        String cipSend = "AT+CIPSEND=";
-        cipSend += connectionId;
-        cipSend += ",";
-        cipSend +=chunk.length();
-        cipSend +="\r\n";
-        String response;
-        response = espWrite(cipSend, "OK");
-        response = espWrite(chunk, "OK");
+        chunk += webPage[i+j];
       }
-   
-      String closeCommand = "AT+CIPCLOSE="; 
-      closeCommand+=connectionId; // append connection id
-      closeCommand+="\r\n";
-     
-      String response = espWrite(closeCommand, "OK");
-     //192.168.4.1 
+        
+      String cipSend = "AT+CIPSEND=";
+      cipSend += connectionId;
+      cipSend += ",";
+      cipSend +=chunk.length();
+      cipSend +="\r\n";
+      String response;
+      response = espWrite(cipSend, "OK");
+      response = espWrite(chunk, "OK");
     }
+   
+    String closeCommand = "AT+CIPCLOSE="; 
+    closeCommand+=connectionId; // append connection id
+    closeCommand+="\r\n";
+     
+    String response = espWrite(closeCommand, "OK");
+    //192.168.4.1 
+  }
 }
